@@ -7,6 +7,7 @@
 ![Entra ID](https://img.shields.io/badge/Microsoft_Entra-Connect_%7C_Intune-0078D4?logo=microsoft&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-5_VLANs-0559C9?logo=ubiquiti&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-automation-5391FE?logo=powershell&logoColor=white)
+![n8n](https://img.shields.io/badge/n8n-monitoring-EA4B71?logo=n8n&logoColor=white)
 
 A self-built hybrid Windows and Linux environment that I design, run and document like a small-business network: a **3-node Proxmox VE cluster**, a **Hyper-V host** running an **Active Directory domain** with **hybrid identity to Microsoft Entra ID and Intune**, a **segmented UniFi network**, filtered DNS, VPN-only remote access and nightly backups.
 
@@ -24,6 +25,7 @@ The documentation is written as an operations handover, the way I'd leave it for
 | **Network** | UniFi gateway and switch, 5 VLANs (2 isolated), DHCP reservations, AdGuard DNS filtering |
 | **Remote access** | Tailscale mesh VPN with a subnet router; zero inbound ports |
 | **Backup** | Proxmox Backup Server with nightly deduplicated jobs and server-side pruning |
+| **Monitoring** | n8n workflows for daily backup verification, stopped-guest alerts and disk-space thresholds, posting to Discord |
 | **Tooling** | Read-only PowerShell and Bash inventory scripts, Proxmox REST API, PowerShell Direct |
 
 ## Architecture
@@ -75,6 +77,7 @@ flowchart TB
 | 4 | [Backup and recovery](docs/04-backup-and-recovery.md) | Backup layers, PBS design, retention, known gaps |
 | 5 | [Security and operations](docs/05-security-and-operations.md) | Controls, monitoring, change management, audit roadmap |
 | 6 | [Runbooks](docs/06-runbooks.md) | Add a guest, restore, onboard a user, domain join, patching, refresh docs |
+|  | [Changelog](CHANGELOG.md) | Weekly infrastructure changes, generated automatically from the Proxmox API |
 
 ## Scripts
 
@@ -96,5 +99,5 @@ All three are **read-only** and safe to run against production systems.
 
 **Practices:** infrastructure documentation · read-only auditing · risk-ranked remediation planning · change logging · snapshot/checkpoint discipline · backup and restore procedures
 
-**Automation:** PowerShell (including PowerShell Direct) · Bash · Proxmox REST API
+**Automation:** PowerShell (including PowerShell Direct) · Bash · Proxmox REST API · n8n (scheduled monitoring, alerting and GitOps-style changelog)
 
