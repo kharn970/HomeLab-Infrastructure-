@@ -77,7 +77,7 @@ flowchart TB
 | 4 | [Backup and recovery](docs/04-backup-and-recovery.md) | Backup layers, PBS design, retention, known gaps |
 | 5 | [Security and operations](docs/05-security-and-operations.md) | Controls, monitoring, change management, audit roadmap |
 | 6 | [Runbooks](docs/06-runbooks.md) | Add a guest, restore, onboard a user, domain join, patching, refresh docs |
-|  | [Changelog](CHANGELOG.md) | Weekly infrastructure changes, generated automatically from the Proxmox API |
+|  | [Changelog](CHANGELOG.md) | Notable infrastructure changes |
 
 ## Scripts
 
@@ -99,5 +99,5 @@ All three are **read-only** and safe to run against production systems.
 
 **Practices:** infrastructure documentation · read-only auditing · risk-ranked remediation planning · change logging · snapshot/checkpoint discipline · backup and restore procedures
 
-**Automation:** PowerShell (including PowerShell Direct) · Bash · Proxmox REST API · n8n (scheduled monitoring, alerting and GitOps-style changelog)
+**Automation:** PowerShell (including PowerShell Direct) · Bash · Proxmox REST API · n8n (scheduled monitoring and alerting)
 

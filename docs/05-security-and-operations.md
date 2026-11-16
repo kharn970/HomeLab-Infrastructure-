@@ -31,7 +31,7 @@ Four n8n workflows poll the Proxmox REST API with a read-only API token and aler
 | Daily backup report | Daily 07:00 | Parses each node's latest backup job log; reports any guest that failed or was skipped, plus datastore usage |
 | Guests down check | Every 15 min | A guest that should always run stops, or a node goes offline; alerts once on change and again on recovery |
 | Disk space watch | Every 6 h | Storage pools, node root disks and container disks crossing 80/90% (containers 85/95%), plus a Monday summary |
-| Weekly docs update | Sundays 06:00 | Regenerates the infrastructure inventory, diffs it against the previous week and commits public changes to [CHANGELOG.md](../CHANGELOG.md) |
+| Weekly docs update | Sundays 06:00 | Regenerates the infrastructure inventory from the API and reports what changed since the previous week |
 
 State (what was already reported) is kept in workflow static data so alerts fire on changes, not every run. The first runs caught a VM whose backups had silently failed for 29 days and a node running its backup window in the wrong time zone.
 
