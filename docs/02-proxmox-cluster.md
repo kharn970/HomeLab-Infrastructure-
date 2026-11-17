@@ -23,17 +23,17 @@
 
 ### LXC containers (all unprivileged Debian)
 
-| ID | Service | Node | vCPU / RAM | Start at boot | Notes |
-|---|---|---|---|---|---|
-| 100 | CouchDB | pve3 | 2 / 4 GB | Yes | Back end for self-hosted Obsidian note sync; also reachable over Tailscale |
-| 101 | File server (TurnKey) | pve | 2 / 512 MB | No | 100 GB data volume; Samba |
-| 102 | AdGuard Home | pve | 1 / 1 GB | Yes | Network-wide DNS filtering |
-| 103 | Pulse | pve | 1 / 1 GB | Yes | Proxmox monitoring; reads the API through a scoped token |
-| 104 | n8n | pve4 | 2 / 2 GB | Yes | Workflow automation |
-| 105 | Rendering service | pve3 | 2 / 2 GB | No | Uses AdGuard directly for DNS |
-| 107 | Navidrome | pve3 | 2 / 1 GB | Yes | Music streaming; library is a host bind mount |
-| 109 | OctoFiesta | pve3 | 2 / 2 GB | No | Docker host; shares the music bind mount |
-| 200 | Proxmox Backup Server | pve4 | 2 / 4 GB | No | 700 GB datastore on the HDD |
+| ID | Service | Node | vCPU / RAM | Notes |
+|---|---|---|---|---|
+| 100 | CouchDB | pve3 | 2 / 4 GB | Back end for self-hosted Obsidian note sync; also reachable over Tailscale |
+| 101 | File server (TurnKey) | pve | 2 / 512 MB | 100 GB data volume; Samba |
+| 102 | AdGuard Home | pve | 1 / 1 GB | Network-wide DNS filtering |
+| 103 | Pulse | pve | 1 / 1 GB | Proxmox monitoring; reads the API through a scoped token |
+| 104 | n8n | pve4 | 2 / 2 GB | Workflow automation |
+| 105 | Rendering service | pve3 | 2 / 2 GB | Uses AdGuard directly for DNS |
+| 107 | Navidrome | pve3 | 2 / 1 GB | Music streaming; library is a host bind mount |
+| 109 | OctoFiesta | pve3 | 2 / 2 GB | Docker host; shares the music bind mount |
+| 200 | Proxmox Backup Server | pve4 | 2 / 4 GB | 700 GB datastore on the HDD |
 
 ### Virtual machines (KVM)
 
