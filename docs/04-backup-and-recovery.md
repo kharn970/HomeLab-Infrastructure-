@@ -18,7 +18,7 @@
 | Runs as | Container on pve4 |
 | Datastore | 700 GB on a dedicated 1 TB HDD (separate from all guest disks) |
 | Connection | Dedicated API token; server certificate fingerprint pinned on the cluster |
-| Job scope | Every guest except the backup server itself |
+| Job scope | Every guest by default; the backup server and disposable lab guests are excluded by policy |
 
 ```mermaid
 flowchart LR
@@ -29,9 +29,9 @@ flowchart LR
   PBS -. planned .-> OFF["Off-node copy"]
 ```
 
-## Restore procedure
+## Recovery approach
 
-See [Runbooks: restore a guest](06-runbooks.md#restore-a-proxmox-guest-from-backup).
+See [Operations and maintenance: backup verification and recovery](06-maintenance.md#backup-verification-and-recovery).
 
 ## Known gaps and plan
 

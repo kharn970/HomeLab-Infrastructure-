@@ -11,7 +11,7 @@
 
 A self-built hybrid Windows and Linux environment that I design, run and document like a small-business network: a **3-node Proxmox VE cluster**, a **Hyper-V host** running an **Active Directory domain** with **hybrid identity to Microsoft Entra ID and Intune**, a **segmented UniFi network**, filtered DNS, VPN-only remote access and nightly backups.
 
-The documentation is written as an operations handover, the way I'd leave it for another administrator: design, inventory, access model, backup strategy, runbooks and a prioritized remediation roadmap from my own audit.
+The documentation is written as an operations handover, the way I'd leave it for another administrator: design, inventory, access model, backup strategy, maintenance standards and a prioritized remediation roadmap from my own audit.
 
 ---
 
@@ -76,7 +76,7 @@ flowchart TB
 | 3 | [Hyper-V and Active Directory](docs/03-hyper-v-and-active-directory.md) | Hyper-V host and VMs, AD design, OUs, AGDLP, GPOs, hybrid identity |
 | 4 | [Backup and recovery](docs/04-backup-and-recovery.md) | Backup layers, PBS design, retention, known gaps |
 | 5 | [Security and operations](docs/05-security-and-operations.md) | Controls, monitoring, change management, audit roadmap |
-| 6 | [Runbooks](docs/06-runbooks.md) | Add a guest, restore, onboard a user, domain join, patching, refresh docs |
+| 6 | [Operations and maintenance](docs/06-maintenance.md) | Build standards, patch management, backup verification, documentation as code |
 |  | [Changelog](CHANGELOG.md) | Notable infrastructure changes |
 
 ## Scripts
