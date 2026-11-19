@@ -2,8 +2,6 @@
 
 Notable infrastructure changes to the lab, newest first.
 
-Guest additions, removals, migrations and resizes are detected from the Proxmox API and committed here automatically each Sunday when there is something to report; design and process changes are added by hand.
-
 ## 2026-11-17
 
 - Backup verification now reads guest exclusions directly from the Proxmox backup job, so the daily report and the backup policy stay in sync.
