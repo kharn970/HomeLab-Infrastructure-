@@ -32,7 +32,7 @@ Five n8n workflows poll the Proxmox REST API with a read-only API token and repo
 | Guests down check | Every 15 min | A guest that should always run stops, or a node goes offline; alerts once on change and again on recovery |
 | Disk space watch | Every 6 h | Storage pools, node root disks and container disks crossing 80/90% (containers 85/95%), plus a Monday summary |
 | Weekly docs update | Sundays 06:00 | Regenerates the infrastructure inventory from the API and reports what changed since the previous week |
-| Weekly GitHub changelog | Sundays 06:30 | Commits a sanitized summary of the week's guest changes to this repository's [changelog](../CHANGELOG.md); skipped when nothing changed |
+| Weekly GitHub changelog | Sundays 06:30 | Publishes the lab change log from the internal documentation share to this repository's [changelog](../CHANGELOG.md); lines containing IP addresses are held back, and nothing is committed when there are no new entries |
 
 State (what was already reported) is kept in workflow static data so alerts fire on changes, not every run. The first runs caught a VM whose backups had silently failed for 29 days and a node running its backup window in the wrong time zone.
 
