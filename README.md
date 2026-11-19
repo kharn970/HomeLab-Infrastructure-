@@ -25,7 +25,7 @@ The documentation is written as an operations handover, the way I'd leave it for
 | **Network** | UniFi gateway and switch, 5 VLANs (2 isolated), DHCP reservations, AdGuard DNS filtering |
 | **Remote access** | Tailscale mesh VPN with a subnet router; zero inbound ports |
 | **Backup** | Proxmox Backup Server with nightly deduplicated jobs and server-side pruning |
-| **Monitoring** | n8n workflows for daily backup verification, stopped-guest alerts and disk-space thresholds, posting to Discord |
+| **Monitoring** | n8n workflows for daily backup verification, stopped-guest alerts and disk-space thresholds, posting to Discord; weekly changelog committed to this repo automatically |
 | **Tooling** | Read-only PowerShell and Bash inventory scripts, Proxmox REST API, PowerShell Direct |
 
 ## Architecture
