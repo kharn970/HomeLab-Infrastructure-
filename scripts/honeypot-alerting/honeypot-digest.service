@@ -1,0 +1,17 @@
+[Unit]
+Description=Daily T-Pot honeypot digest to Discord
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Runs as a throwaway, unprivileged user created just for this run
+DynamicUser=yes
+# Persistent folder for the list of malware hashes already reported
+StateDirectory=honeypot-digest
+# Hands the webhook URL to the service without the script needing root
+LoadCredential=webhook:/etc/honeypot-digest/webhook
+ExecStart=/usr/bin/python3 /usr/local/bin/honeypot-digest.py
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes

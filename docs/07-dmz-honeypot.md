@@ -143,12 +143,26 @@ Troubleshooting notes from the build, kept because they apply well beyond this p
 
 | Cadence | Check | Red flag |
 |---|---|---|
-| Daily | Kibana: volume, honeypots hit, top sources and countries | – |
+| Daily | Discord digest (automated, see [Alerting](#alerting)) | Red title, or no digest at all |
 | Daily | pfSense firewall log: blocks with the honeypot as **source** | Repeated private-range or unexpected outbound attempts |
 | Daily | pfSense Suricata alerts with the honeypot as **source** | C2, coinminer or malware traffic from the sensor itself |
-| Daily | Real SSH logins on the sensor | Any login that isn't the administrator |
-| Daily | Disk usage on the sensor | Over 80% |
 | Weekly | pfSense memory; limiter throughput; data export for the write-up | Memory near 100% |
+
+### Alerting
+
+Two scripts on the sensor post to a dedicated Discord channel ([source and install](../scripts/honeypot-alerting/)). They run under systemd timers as a throwaway unprivileged user, receive the webhook URL as a systemd credential, and treat every attacker-controlled string as hostile (no mentions, no formatting breakouts, defanged URLs).
+
+| Alert | Speed | Trigger |
+|---|---|---|
+| 🔴 Real SSH activity on the sensor | ≤ 5 min | Any login or connection on the real SSH port from an address other than the admin workstation |
+| 🔴 Sensor-initiated IDS alert | ≤ 5 min | A Suricata alert on a connection the sensor started (to port 80/443) with no Cowrie download at that time |
+| 🟠 Likely payload fetch | ≤ 5 min | The same, but within three minutes of a Cowrie download: the honeypot collecting a sample |
+| 🟠 Silent pipeline / disk | ≤ 5 min | No honeypot attacks for 60 minutes, or the disk above 85% |
+| Daily digest | 08:00 | Attacks by honeypot, top sources, countries, credentials, commands, new malware hashes, top signatures. Doubles as a heartbeat |
+
+**Tuning lessons:** honeypot services *reply* to attackers, so a naive "alerts from the sensor" rule fires constantly (Cowrie's Telnet "login incorrect" matches a classic signature). Sensor-initiated traffic is therefore defined by the egress policy: only connections from the sensor to ports 80/443 count. Suricata also logs ordinary TLS and flow records, so only `event_type: alert` documents are considered, and passive fingerprinting events (p0f, fatt) are excluded from attack totals.
+
+**Limits:** a full compromise of the sensor could stop these timers; the missing daily digest and the independent Suricata on pfSense cover that case. The pfSense firewall log is not forwarded yet and is checked by hand.
 
 **Kill switch** (fastest first): disable the pfSense DMZ interface, pause the UniFi port forward, or unplug the DMZ cable. The sensor stays powered so its memory can be examined; after any sign of a real compromise it is wiped and rebuilt from this page.
 

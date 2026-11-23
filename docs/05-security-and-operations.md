@@ -23,6 +23,7 @@
 - **Pulse** dashboard for node, guest and storage health across the cluster.
 - **UniFi** client and device monitoring, plus a daily WAN speed test.
 - Backup job notifications through the Proxmox notification system.
+- Honeypot sensor: daily Discord digest and 5-minute compromise alerts ([section 7](07-dmz-honeypot.md#alerting)).
 
 ### Automated monitoring (n8n)
 

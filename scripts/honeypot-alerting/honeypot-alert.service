@@ -1,0 +1,19 @@
+[Unit]
+Description=Near-real-time honeypot alerts to Discord
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+DynamicUser=yes
+# Lets the throwaway user read the SSH log (the systemd journal)
+SupplementaryGroups=systemd-journal
+StateDirectory=honeypot-alert
+LoadCredential=webhook:/etc/honeypot-digest/webhook
+# Space-separated addresses whose real-SSH activity is expected: replace the example
+# 192.0.2.10 with your admin workstation's address
+Environment=ADMIN_IPS=192.0.2.10
+ExecStart=/usr/bin/python3 /usr/local/bin/honeypot-alert.py
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes

@@ -97,8 +97,9 @@ flowchart TB
 | [`proxmox-inventory.sh`](scripts/proxmox-inventory.sh) | Any Proxmox node | Cluster, storage, backup jobs, per-node network, every guest's config and IPs |
 | [`Collect-HyperVInventory.ps1`](scripts/Collect-HyperVInventory.ps1) | Hyper-V host (admin) | Hardware, switches, VMs, VHDX chains, checkpoints, Secure Boot/TPM, integration services |
 | [`Collect-DomainInventory.ps1`](scripts/Collect-DomainInventory.ps1) | Hyper-V host (admin) | Uses **PowerShell Direct** to query the DC: domain, forest, FSMO, replication, OUs, groups, GPO links, password policy, DNS, DHCP |
+| [`honeypot-alerting/`](scripts/honeypot-alerting/) | Honeypot sensor (systemd timers) | Daily Discord digest of attacker activity and 5-minute alerts for signs the sensor itself is compromised |
 
-All three are **read-only** and safe to run against production systems.
+All of them are **read-only** and safe to run against production systems.
 
 ## Skills demonstrated
 
