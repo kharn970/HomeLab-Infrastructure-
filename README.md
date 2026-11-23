@@ -36,7 +36,7 @@ The documentation is written as an operations handover, the way I'd leave it for
 
 ```mermaid
 flowchart TB
-  ISP["Fiber ISP"] --> GW["UniFi Cloud Gateway Ultra<br/>firewall · DHCP · inter-VLAN routing"]
+  ISP["Fiber ISP"] -->|"honeypot ports forwarded to the DMZ only"| GW["UniFi Cloud Gateway Ultra<br/>zone firewall · DHCP · inter-VLAN routing"]
   GW --> SW["UniFi Switch Lite 8 PoE"]
   GW --> WIFI["Wi-Fi mesh · VLAN 3"]
 
@@ -56,17 +56,18 @@ flowchart TB
     W11["Windows 11 clients"]
   end
 
-  subgraph ISO["VLAN 99 · DMZ zone"]
-    PF["pfSense DMZ firewall (VM on pve4)"]
+  subgraph DMZ["DMZ zone · VLAN 99 → honeypot segment 10.99.10.0/24"]
+    direction LR
+    PF["pfSense DMZ firewall<br/>VM 210 on pve4 · Suricata IDS"]
     HP["T-Pot honeypot sensor<br/>dedicated laptop"]
+    PF ===|"passthrough NIC<br/>direct cable"| HP
   end
-
-  INET(("Internet")) -->|honeypot ports only| GW
-  PF ---|passthrough NIC| HP
 
   SW --> V1
   GW --> V2
-  GW --> ISO
+  SW -->|VLAN 99 tagged to pve4| PF
+  PVE -.-|hosts VM 210| PF
+  V1 ~~~ DMZ
   DC1 <-->|replication| DC2
   DC1 -.->|sync| ENTRA["Microsoft Entra ID · Intune"]
   PVE -->|nightly| PBS

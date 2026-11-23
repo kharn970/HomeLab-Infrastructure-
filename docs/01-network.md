@@ -6,13 +6,15 @@
 
 ```mermaid
 flowchart LR
-  ISP["Fiber ISP<br/>2.5 GbE WAN"] --> GW["UniFi Cloud Gateway Ultra<br/>routing · firewall · DHCP"]
+  ISP["Fiber ISP<br/>2.5 GbE WAN"] -->|"honeypot ports forwarded"| GW["UniFi Cloud Gateway Ultra<br/>routing · zone firewall · DHCP"]
   GW -->|port 3| PC["Admin workstation"]
   GW -->|port 2| MESH["Wi-Fi mesh (VLAN 3)"]
   GW --> SW["UniFi Switch Lite 8 PoE"]
   SW -->|port 2| N1["Proxmox node pve"]
   SW -->|port 3| N3["Proxmox node pve3"]
-  SW -->|port 5| N4["Proxmox node pve4<br/>VLAN-aware bridge"]
+  SW -->|"port 5 · trunk incl. VLAN 99"| N4["Proxmox node pve4<br/>VLAN-aware bridge"]
+  N4 -->|"VLAN 99 tag to VM only"| PF["VM 210 · pfSense<br/>DMZ firewall"]
+  PF ===|"passthrough NIC · direct cable"| HP["Honeypot sensor laptop<br/>DMZ 10.99.10.0/24"]
   GW -.-> HV["Hyper-V host (VLAN 2)"]
 ```
 
@@ -37,6 +39,19 @@ WAN is a single fiber circuit with a second WAN port reserved for failover. UPnP
 "Isolated" uses UniFi's per-network isolation: hosts on VLAN 4 can reach the internet but no other internal network. VLAN 99 is in UniFi's **DMZ zone** with explicit zone policies instead: the DMZ can only reply to internal hosts, and only the admin workstation can reach it. DHCP guarding is enabled on both VLANs.
 
 VLAN tags reach VMs through a VLAN-aware Linux bridge on Proxmox (`vmbr0` on pve4, guest NICs tagged 2, 3 or 99) and through access-mode VLAN assignment on Hyper-V virtual NICs.
+
+## DMZ traffic path
+
+Honeypot traffic follows a fixed physical path. The sensor is never attached to the switch, and the Proxmox host never holds an address in either DMZ segment. Full design in [section 7](07-dmz-honeypot.md).
+
+| Hop | Device | What happens |
+|---|---|---|
+| 1 | UniFi gateway | Forwards only the honeypot ports to the pfSense WAN on VLAN 99; DMZ zone policies allow the DMZ to reply to internal hosts but never start a connection inward |
+| 2 | Switch, pve4 port | Carries VLAN 99 tagged on the trunk to pve4 |
+| 3 | pve4 `vmbr0` | Delivers the VLAN 99 tag to VM 210's WAN NIC only; the host itself has no VLAN 99 interface |
+| 4 | VM 210 (pfSense) | NAT to the sensor, Suricata inspection, default-deny and rate-limited egress |
+| 5 | Passthrough NIC and direct cable | A dedicated PCIe NIC owned by the VM through VFIO, cabled straight to the sensor; the host kernel never handles DMZ traffic |
+| 6 | Sensor laptop | Runs T-Pot; can reach only pfSense's DNS/NTP and the internet on HTTP/HTTPS |
 
 ## IP addressing policy
 
