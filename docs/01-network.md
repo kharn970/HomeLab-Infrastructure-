@@ -32,9 +32,9 @@ WAN is a single fiber circuit with a second WAN port reserved for failover. UPnP
 | 2 | Windows Server | 192.168.2.0/24 | .1 | .6 to .254 | No | Hyper-V host, Active Directory, Windows clients |
 | 3 | Wi-Fi | 192.168.3.0/24 | .1 | .6 to .254 | No | Wireless clients, security tooling VM |
 | 4 | Isolated | 192.168.4.0/24 | .1 | .6 to .254 | **Yes** | Honeypot VM (in progress) |
-| 99 | Lab WAN / Honeypot | 192.168.99.0/28 | .1 | .2 to .14 | **Yes** | WAN side of a pfSense lab firewall |
+| 99 | DMZ | 192.168.99.0/28 | .1 | .6 to .14 | **DMZ zone** | WAN side of the pfSense honeypot firewall ([section 7](07-dmz-honeypot.md)) |
 
-"Isolated" uses UniFi's per-network isolation: hosts on VLAN 4 and VLAN 99 can reach the internet but no other internal network. DHCP guarding is enabled on both isolated VLANs.
+"Isolated" uses UniFi's per-network isolation: hosts on VLAN 4 can reach the internet but no other internal network. VLAN 99 is in UniFi's **DMZ zone** with explicit zone policies instead: the DMZ can only reply to internal hosts, and only the admin workstation can reach it. DHCP guarding is enabled on both VLANs.
 
 VLAN tags reach VMs through a VLAN-aware Linux bridge on Proxmox (`vmbr0` on pve4, guest NICs tagged 2, 3 or 99) and through access-mode VLAN assignment on Hyper-V virtual NICs.
 
@@ -61,7 +61,7 @@ flowchart LR
 
 ## Remote access
 
-Remote administration uses a **Tailscale** mesh VPN instead of port forwarding, so no inbound ports are open on the firewall.
+Remote administration uses a **Tailscale** mesh VPN instead of port forwarding, so no inbound ports lead to any internal network. The only port forwards on the gateway carry honeypot traffic to the DMZ firewall ([section 7](07-dmz-honeypot.md)), and the DMZ ranges are not advertised to the tailnet.
 
 - One Proxmox node is the **subnet router**, publishing the LAN to authorized tailnet devices.
 - MagicDNS and HTTPS certificates are enabled for tailnet hostnames.

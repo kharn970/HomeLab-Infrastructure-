@@ -17,7 +17,7 @@
 |---|---|---|---|---|---|
 | pve | Core i3-9100T, 4C/4T | 16 GB | 256 GB NVMe | n/a | `vmbr0` |
 | pve3 | Core i7-6700T, 4C/8T | 16 GB | 512 GB NVMe | n/a | `vmbr0` |
-| pve4 | Core i5-11500, 6C/12T | 32 GB | 500 GB NVMe | 1 TB HDD (LVM-thin `HDD-Backup`) | `vmbr0`, VLAN-aware |
+| pve4 | Core i5-11500, 6C/12T | 32 GB | 500 GB NVMe | 1 TB HDD (LVM-thin `HDD-Backup`) | `vmbr0`, VLAN-aware; spare PCIe NIC passed through to VM 210 |
 
 ## Workloads
 
@@ -41,7 +41,7 @@
 |---|---|---|---|---|---|
 | 106 | Ubuntu Server 26.04 test | pve3 | 2 / 4 GB | 32 GB | VLAN 1; `Hardened` snapshot |
 | 108 | Security tooling (Kali Linux) | pve3 | 2 / 4 GB | 80 GB | VLAN 3; `FreshInstall` snapshot |
-| 210 | pfSense lab firewall | pve4 | 2 / 4 GB | 20 GB | WAN on VLAN 99; LAN bridge in progress |
+| 210 | pfSense DMZ firewall | pve4 | 2 / 4 GB | 20 GB | WAN on VLAN 99; DMZ on a passed-through PCIe NIC ([section 7](07-dmz-honeypot.md)) |
 | 220 | Windows 11 workstation | pve4 | 2 / 12 GB (balloon) | 120 GB on HDD | VLAN 2; UEFI + vTPM 2.0 |
 
 ## Access model

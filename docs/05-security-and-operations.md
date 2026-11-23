@@ -6,8 +6,10 @@
 
 | Area | Control |
 |---|---|
-| Perimeter | No inbound port forwards; remote access only through Tailscale |
-| Segmentation | 5 VLANs; honeypot and lab-WAN networks isolated from all internal networks |
+| Perimeter | No inbound port forwards to internal networks; remote access only through Tailscale. Honeypot ports forward only to the DMZ firewall |
+| Segmentation | 5 VLANs; honeypot DMZ behind two independent firewall layers (UniFi zone policies and pfSense), with the sensor on separate hardware |
+| Detection | Suricata IDS (ET Open) on the DMZ firewall and on the honeypot sensor; firewall tripwire rules log any DMZ attempt to reach a private address |
+| Egress | DMZ limited to HTTP/HTTPS outbound, rate-limited to 10 Mbit/s, logged default deny |
 | DNS | Network-wide filtering through AdGuard Home |
 | Least privilege | Read-only auditor account for documentation; scoped API tokens for monitoring and backup; Domain, Enterprise and Schema Admins limited to a single admin account |
 | Identity | AGDLP group model, department OUs, pre-logon legal banner by GPO, Intune enrollment |
@@ -57,3 +59,6 @@ Findings from the latest read-only audit, prioritized:
 | Low | One workstation in the default Computers container (misses OU GPOs) | Move it to its department OU; redirect the default container |
 | Low | DC hostname longer than 15 characters (NetBIOS truncation) | Use 15-character names for future DCs |
 | Low | Evaluation licences on the Windows Server VMs | Track expiry; convert or rebuild before it lapses |
+| Medium | Non-VLAN-aware bridges on pve and pve3 flood every tagged VLAN from the switch trunk to their guests (VLAN 99 broadcasts seen inside a guest) | Limit the switch port profiles to the VLANs those nodes need, or make `vmbr0` VLAN-aware with explicit allowed VLANs |
+| Medium | The pfSense VM is still excluded from nightly backups from its lab days | Re-include it now that it is the DMZ firewall; keep an offline configuration export |
+| Low | The DMZ firewall VM is not on the stopped-guest alert list | Add it to the n8n guests-down workflow |

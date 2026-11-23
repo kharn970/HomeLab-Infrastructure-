@@ -8,8 +8,11 @@
 ![UniFi](https://img.shields.io/badge/UniFi-5_VLANs-0559C9?logo=ubiquiti&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-automation-5391FE?logo=powershell&logoColor=white)
 ![n8n](https://img.shields.io/badge/n8n-monitoring-EA4B71?logo=n8n&logoColor=white)
+![pfSense](https://img.shields.io/badge/pfSense-2.9-212121?logo=pfsense&logoColor=white)
+![Suricata](https://img.shields.io/badge/Suricata-IDS-EF6C00)
+![T-Pot](https://img.shields.io/badge/T--Pot-honeypot-E20074)
 
-A self-built hybrid Windows and Linux environment that I design, run and document like a small-business network: a **3-node Proxmox VE cluster**, a **Hyper-V host** running an **Active Directory domain** with **hybrid identity to Microsoft Entra ID and Intune**, a **segmented UniFi network**, filtered DNS, VPN-only remote access and nightly backups.
+A self-built hybrid Windows and Linux environment that I design, run and document like a small-business network: a **3-node Proxmox VE cluster**, a **Hyper-V host** running an **Active Directory domain** with **hybrid identity to Microsoft Entra ID and Intune**, a **segmented UniFi network**, filtered DNS, VPN-only remote access, nightly backups and an **internet-facing honeypot** contained in its own DMZ.
 
 The documentation is written as an operations handover, the way I'd leave it for another administrator: design, inventory, access model, backup strategy, maintenance standards and a prioritized remediation roadmap from my own audit.
 
@@ -19,11 +22,12 @@ The documentation is written as an operations handover, the way I'd leave it for
 
 | | |
 |---|---|
-| **Compute** | 4 physical hosts (3 Proxmox nodes + 1 Hyper-V host): 40 CPU threads, 112 GB RAM, about 3.3 TB of storage |
+| **Compute** | 4 physical hosts (3 Proxmox nodes + 1 Hyper-V host) plus a dedicated honeypot sensor: 40 CPU threads, 112 GB RAM, about 3.3 TB of storage |
 | **Workloads** | 9 LXC containers and 4 KVM VMs on Proxmox; 6 Hyper-V VMs |
 | **Identity** | `corp.example.com` AD domain: 2 Windows Server 2025 DCs, department OUs, AGDLP, GPO, Entra Connect, Intune |
 | **Network** | UniFi gateway and switch, 5 VLANs (2 isolated), DHCP reservations, AdGuard DNS filtering |
-| **Remote access** | Tailscale mesh VPN with a subnet router; zero inbound ports |
+| **Remote access** | Tailscale mesh VPN with a subnet router; no inbound ports to any internal network |
+| **Threat research** | T-Pot honeypot on dedicated hardware behind a pfSense DMZ firewall (PCIe NIC passthrough), Suricata IDS, default-deny rate-limited egress |
 | **Backup** | Proxmox Backup Server with nightly deduplicated jobs and server-side pruning |
 | **Monitoring** | n8n workflows for daily backup verification, stopped-guest alerts and disk-space thresholds, posting to Discord; weekly changelog committed to this repo automatically |
 | **Tooling** | Read-only PowerShell and Bash inventory scripts, Proxmox REST API, PowerShell Direct |
@@ -52,10 +56,13 @@ flowchart TB
     W11["Windows 11 clients"]
   end
 
-  subgraph ISO["VLAN 4 + 99 · isolated"]
-    HP["Honeypot (in progress)"]
-    PF["pfSense lab WAN"]
+  subgraph ISO["VLAN 99 · DMZ zone"]
+    PF["pfSense DMZ firewall (VM on pve4)"]
+    HP["T-Pot honeypot sensor<br/>dedicated laptop"]
   end
+
+  INET(("Internet")) -->|honeypot ports only| GW
+  PF ---|passthrough NIC| HP
 
   SW --> V1
   GW --> V2
@@ -77,6 +84,7 @@ flowchart TB
 | 4 | [Backup and recovery](docs/04-backup-and-recovery.md) | Backup layers, PBS design, retention, known gaps |
 | 5 | [Security and operations](docs/05-security-and-operations.md) | Controls, monitoring, change management, audit roadmap |
 | 6 | [Operations and maintenance](docs/06-maintenance.md) | Build standards, patch management, backup verification, documentation as code |
+| 7 | [DMZ honeypot](docs/07-dmz-honeypot.md) | Internet-facing T-Pot behind pfSense: design, firewall policy, IDS, validation, troubleshooting |
 |  | [Changelog](CHANGELOG.md) | Notable infrastructure changes |
 
 ## Scripts
@@ -95,7 +103,9 @@ All three are **read-only** and safe to run against production systems.
 
 **Cloud and identity:** Microsoft Entra ID · Entra Connect · Intune (MDM auto-enrollment) · hybrid join · AGDLP · least-privilege service accounts and API tokens
 
-**Networking:** 802.1Q VLANs · network isolation · DHCP reservations · DNS filtering · VLAN-aware bridges · Tailscale subnet routing · RSTP
+**Networking:** 802.1Q VLANs · network isolation · UniFi zone-based firewall · pfSense (NAT, aliases, limiters, Kea DHCP) · egress filtering · DHCP reservations · DNS filtering · VLAN-aware bridges · PCIe passthrough (VFIO/IOMMU) · Tailscale subnet routing · RSTP
+
+**Security:** honeypot deployment (T-Pot, Cowrie) · Suricata IDS (ET Open) · Elastic Stack / Kibana · containment testing · SSH hardening · threat-intelligence sharing
 
 **Practices:** infrastructure documentation · read-only auditing · risk-ranked remediation planning · change logging · snapshot/checkpoint discipline · backup and restore procedures
 
