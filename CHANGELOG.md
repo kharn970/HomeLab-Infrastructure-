@@ -5,6 +5,7 @@ Notable infrastructure changes to the lab, newest first.
 ## 2026-11-22
 
 - DMZ honeypot went live: T-Pot on a dedicated laptop behind the pfSense firewall VM, with Suricata IDS on the firewall and default-deny, rate-limited egress. See section 7 of the documentation.
+- Added the DMZ honeypot to the main infrastructure documentation as section 7, with the network, Proxmox and security pages updated to match.
 - VLAN 99 moved from per-network isolation to explicit UniFi DMZ zone policies.
 - pfSense updated to 2.9.2; DHCP moved from ISC to Kea.
 
