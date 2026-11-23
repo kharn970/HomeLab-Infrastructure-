@@ -172,4 +172,5 @@ Two scripts on the sensor post to a dedicated Discord channel ([source and insta
 
 - 30-day findings: sessions and unique sources, top credentials, commands, malware hashes, top Suricata signatures, all mapped to MITRE ATT&CK (for example T1110.001 Password Guessing, T1059.004 Unix Shell, T1105 Ingress Tool Transfer, T1496 Resource Hijacking).
 - Phase B port range once phase A has run cleanly.
+- Automated containment: n8n polls the sensor's health and, on a high-confidence compromise signal, pauses the pfSense VM through a Proxmox API token limited to that VM's power controls. Medium-confidence alerts wait for manual approval.
 - Forward pfSense firewall and Suricata logs to a log host on the internal network through a single one-way pinhole.
