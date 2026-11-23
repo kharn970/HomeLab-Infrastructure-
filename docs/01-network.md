@@ -28,15 +28,14 @@ WAN is a single fiber circuit with a second WAN port reserved for failover. UPnP
 
 ## VLANs
 
-| VLAN | Name | Subnet | Gateway | DHCP pool | Isolated | Purpose |
+| VLAN | Name | Subnet | Gateway | DHCP pool | Zone | Purpose |
 |---|---|---|---|---|---|---|
-| 1 | Default | 192.168.1.0/24 | .1 | .6 to .254 | No | Proxmox nodes, Linux services, wired PCs |
-| 2 | Windows Server | 192.168.2.0/24 | .1 | .6 to .254 | No | Hyper-V host, Active Directory, Windows clients |
-| 3 | Wi-Fi | 192.168.3.0/24 | .1 | .6 to .254 | No | Wireless clients, security tooling VM |
-| 4 | Isolated | 192.168.4.0/24 | .1 | .6 to .254 | **Yes** | Honeypot VM (in progress) |
-| 99 | DMZ | 192.168.99.0/28 | .1 | .6 to .14 | **DMZ zone** | WAN side of the pfSense honeypot firewall ([section 7](07-dmz-honeypot.md)) |
+| 1 | Default | 192.168.1.0/24 | .1 | .6 to .254 | Internal | Proxmox nodes, Linux services, wired PCs, security tooling VM |
+| 2 | Windows Server | 192.168.2.0/24 | .1 | .6 to .254 | Internal | Hyper-V host, Active Directory, Windows clients |
+| 3 | Wi-Fi | 192.168.3.0/24 | .1 | .6 to .254 | Internal | Wireless clients |
+| 99 | DMZ | 192.168.99.0/28 | .1 | .6 to .14 | **DMZ** | WAN side of the pfSense honeypot firewall ([section 7](07-dmz-honeypot.md)) |
 
-"Isolated" uses UniFi's per-network isolation: hosts on VLAN 4 can reach the internet but no other internal network. VLAN 99 is in UniFi's **DMZ zone** with explicit zone policies instead: the DMZ can only reply to internal hosts, and only the admin workstation can reach it. DHCP guarding is enabled on both VLANs.
+Zones come from UniFi's zone-based firewall. Internal VLANs can reach each other; VLAN 99 is in the **DMZ zone**, where explicit policies let the DMZ only reply to internal hosts and let only the admin workstation reach it. DHCP guarding is enabled on the DMZ VLAN. A former isolated VLAN reserved for an earlier honeypot design was retired once the DMZ went live.
 
 VLAN tags reach VMs through a VLAN-aware Linux bridge on Proxmox (`vmbr0` on pve4, guest NICs tagged 2, 3 or 99) and through access-mode VLAN assignment on Hyper-V virtual NICs.
 

@@ -40,7 +40,7 @@
 | ID | VM | Node | vCPU / RAM | Disk | Network |
 |---|---|---|---|---|---|
 | 106 | Ubuntu Server 26.04 test | pve3 | 2 / 4 GB | 32 GB | VLAN 1; `Hardened` snapshot |
-| 108 | Security tooling (Kali Linux) | pve3 | 2 / 4 GB | 80 GB | VLAN 3; `FreshInstall` snapshot |
+| 108 | Security tooling (Kali Linux) | pve3 | 2 / 4 GB | 80 GB | Tagged for VLAN 3 but currently receives a Default-network address ([roadmap](05-security-and-operations.md#audit-and-remediation-roadmap)); `FreshInstall` snapshot |
 | 210 | pfSense DMZ firewall | pve4 | 2 / 4 GB | 20 GB | WAN on VLAN 99; DMZ on a passed-through PCIe NIC ([section 7](07-dmz-honeypot.md)) |
 | 220 | Windows 11 workstation | pve4 | 2 / 12 GB (balloon) | 120 GB on HDD | VLAN 2; UEFI + vTPM 2.0 |
 

@@ -5,7 +5,7 @@
 ![Windows Server](https://img.shields.io/badge/Windows_Server-2025-0078D4?logo=windows&logoColor=white)
 ![Active Directory](https://img.shields.io/badge/Active_Directory-AGDLP_%7C_GPO-0078D4)
 ![Entra ID](https://img.shields.io/badge/Microsoft_Entra-Connect_%7C_Intune-0078D4?logo=microsoft&logoColor=white)
-![UniFi](https://img.shields.io/badge/UniFi-5_VLANs-0559C9?logo=ubiquiti&logoColor=white)
+![UniFi](https://img.shields.io/badge/UniFi-4_VLANs_%2B_DMZ-0559C9?logo=ubiquiti&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-automation-5391FE?logo=powershell&logoColor=white)
 ![n8n](https://img.shields.io/badge/n8n-monitoring-EA4B71?logo=n8n&logoColor=white)
 ![pfSense](https://img.shields.io/badge/pfSense-2.9-212121?logo=pfsense&logoColor=white)
@@ -16,6 +16,8 @@ A self-built hybrid Windows and Linux environment that I design, run and documen
 
 The documentation is written as an operations handover, the way I'd leave it for another administrator: design, inventory, access model, backup strategy, maintenance standards and a prioritized remediation roadmap from my own audit.
 
+> The Active Directory domain and domain controller names are sanitized for publication. Only private (RFC 1918) address ranges are shown.
+
 ---
 
 ## At a glance
@@ -23,9 +25,9 @@ The documentation is written as an operations handover, the way I'd leave it for
 | | |
 |---|---|
 | **Compute** | 4 physical hosts (3 Proxmox nodes + 1 Hyper-V host) plus a dedicated honeypot sensor: 40 CPU threads, 112 GB RAM, about 3.3 TB of storage |
-| **Workloads** | 9 LXC containers and 4 KVM VMs on Proxmox; 6 Hyper-V VMs |
+| **Workloads** | 9 LXC containers and 4 KVM VMs on Proxmox; 5 Hyper-V VMs |
 | **Identity** | `corp.example.com` AD domain: 2 Windows Server 2025 DCs, department OUs, AGDLP, GPO, Entra Connect, Intune |
-| **Network** | UniFi gateway and switch, 5 VLANs (2 isolated), DHCP reservations, AdGuard DNS filtering |
+| **Network** | UniFi gateway and switch, 4 VLANs including a DMZ zone, DHCP reservations, AdGuard DNS filtering |
 | **Remote access** | Tailscale mesh VPN with a subnet router; no inbound ports to any internal network |
 | **Threat research** | T-Pot honeypot on dedicated hardware behind a pfSense DMZ firewall (PCIe NIC passthrough), Suricata IDS, default-deny rate-limited egress |
 | **Backup** | Proxmox Backup Server with nightly deduplicated jobs and server-side pruning |

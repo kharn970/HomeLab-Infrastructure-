@@ -7,7 +7,7 @@
 | Area | Control |
 |---|---|
 | Perimeter | No inbound port forwards to internal networks; remote access only through Tailscale. Honeypot ports forward only to the DMZ firewall |
-| Segmentation | 5 VLANs; honeypot DMZ behind two independent firewall layers (UniFi zone policies and pfSense), with the sensor on separate hardware |
+| Segmentation | 4 VLANs; honeypot DMZ behind two independent firewall layers (UniFi zone policies and pfSense), with the sensor on separate hardware |
 | Detection | Suricata IDS (ET Open) on the DMZ firewall and on the honeypot sensor; firewall tripwire rules log any DMZ attempt to reach a private address |
 | Egress | DMZ limited to HTTP/HTTPS outbound, rate-limited to 10 Mbit/s, logged default deny |
 | DNS | Network-wide filtering through AdGuard Home |
@@ -16,7 +16,7 @@
 | Endpoints | Windows 11 VMs on UEFI with Secure Boot and vTPM 2.0 |
 | Containers | All LXC containers unprivileged |
 | Data | End-to-end encrypted note sync |
-| Switching | RSTP, rogue DHCP server detection, DHCP guarding on isolated VLANs |
+| Switching | RSTP, rogue DHCP server detection, DHCP guarding on the DMZ VLAN |
 
 ## Monitoring
 
@@ -48,6 +48,7 @@ Findings from the latest read-only audit, prioritized:
 
 | Priority | Finding | Remediation |
 |---|---|---|
+| High | Hyper-V host runs Windows 10 22H2, past end of support (October 2025), and hosts both domain controllers | Move the host to a supported OS (Windows 11 Pro or Windows Server with Hyper-V), or cover it with Extended Security Updates until then |
 | High | Backups stored on a single disk in one node | Add off-node replication of the PBS datastore |
 | High | FSMO-holding DC VM running on an old checkpoint | Merge the checkpoint; disable checkpoints on all DC VMs |
 | High | DNS role on only one DC | Install DNS on the second DC; DCs point only at each other for DNS |
@@ -57,8 +58,8 @@ Findings from the latest read-only audit, prioritized:
 | Medium | Some services on dynamic DHCP addresses | Add DHCP reservations |
 | Medium | Mixed Proxmox patch levels across nodes | Patch to a common release during a maintenance window |
 | Low | One workstation in the default Computers container (misses OU GPOs) | Move it to its department OU; redirect the default container |
-| Low | DC hostname longer than 15 characters (NetBIOS truncation) | Use 15-character names for future DCs |
 | Low | Evaluation licences on the Windows Server VMs | Track expiry; convert or rebuild before it lapses |
 | Medium | Non-VLAN-aware bridges on pve and pve3 flood every tagged VLAN from the switch trunk to their guests (VLAN 99 broadcasts seen inside a guest) | Limit the switch port profiles to the VLANs those nodes need, or make `vmbr0` VLAN-aware with explicit allowed VLANs |
 | Medium | The pfSense VM is still excluded from nightly backups from its lab days | Re-include it now that it is the DMZ firewall; keep an offline configuration export |
 | Low | The DMZ firewall VM is not on the stopped-guest alert list | Add it to the n8n guests-down workflow |
+| Low | The security tooling VM is tagged for VLAN 3 but receives a Default-network address | Check VLAN carriage on that node's switch port; move the VM to its intended segment |

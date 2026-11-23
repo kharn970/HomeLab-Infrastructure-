@@ -12,7 +12,7 @@ Every new workload is held to the same baseline, so the environment stays predic
 |---|---|
 | Placement by role | Infrastructure on **pve**, applications on **pve3**, Windows, lab and backup workloads on **pve4** |
 | Isolation | Unprivileged LXC containers by default; VMs only where a full kernel or Windows is required |
-| Networking | VLAN-aware `vmbr0` bridge with the guest tagged into its segment; infrastructure services on static IPs with matching DHCP reservations |
+| Networking | VLAN-aware `vmbr0` bridge with the guest tagged into its segment (in place on pve4; pve and pve3 are on the [roadmap](05-security-and-operations.md#audit-and-remediation-roadmap)); infrastructure services on static IPs with matching DHCP reservations |
 | Protection | Covered by the nightly backup job automatically; exclusions are deliberate and limited to lab or disposable guests |
 | Identity | Users and computers placed in department OUs; access granted through role groups only (AGDLP) |
 | Documentation | Inventory, network plan and changelog updated as part of the change, not after it |
